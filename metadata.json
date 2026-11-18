@@ -1,0 +1,8 @@
+{
+  "name": "NIEL. — Personal Developer Portfolio & AI Platform",
+  "description": "Personal portfolio, bilingual AI Tutor, AI Coding Assistant, IT Learning Hub, Code Playground, Tech Blog, and Admin Workspace for Niel, an Informatics Engineering student.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

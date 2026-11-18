@@ -1,0 +1,130 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "Portfolio project displayed in Featured Projects, Projects Gallery, and Project Detail pages.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "category": {
+          "type": "string",
+          "enum": ["Web Development", "UI/UX Design", "Academic Projects", "Software Development", "Experiments"]
+        },
+        "shortDescription": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "overview": { "type": "string", "minLength": 1, "maxLength": 3000 },
+        "problemStatement": { "type": "string", "maxLength": 2000 },
+        "objectives": { "type": "array" },
+        "features": { "type": "array" },
+        "technologies": { "type": "array" },
+        "developmentProcess": { "type": "string", "maxLength": 3000 },
+        "challengesAndSolutions": { "type": "string", "maxLength": 3000 },
+        "thumbnailUrl": { "type": "string", "maxLength": 1000 },
+        "githubUrl": { "type": "string", "maxLength": 500 },
+        "liveUrl": { "type": "string", "maxLength": 500 },
+        "featured": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "category", "shortDescription", "technologies", "featured"]
+    },
+    "BlogPost": {
+      "title": "BlogPost",
+      "description": "Technology blog article managed via Admin Dashboard.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 180 },
+        "category": {
+          "type": "string",
+          "enum": ["Programming", "Technology", "AI", "Web Development", "Student Life", "Tutorials"]
+        },
+        "excerpt": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "content": { "type": "string", "minLength": 1, "maxLength": 15000 },
+        "readingTimeMin": { "type": "number" },
+        "publishedAt": { "type": "string", "maxLength": 40 },
+        "published": { "type": "boolean" },
+        "featured": { "type": "boolean" }
+      },
+      "required": ["id", "title", "category", "excerpt", "content", "published"]
+    },
+    "LearningResource": {
+      "title": "LearningResource",
+      "description": "IT Learning Hub module or article.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 180 },
+        "category": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "level": { "type": "string", "enum": ["Beginner", "Intermediate", "Advanced"] },
+        "readingTimeMin": { "type": "number" },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "content": { "type": "string", "minLength": 1, "maxLength": 15000 },
+        "keyTakeaways": { "type": "array" },
+        "roadmapId": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["id", "title", "category", "level", "summary", "content"]
+    },
+    "SiteSetting": {
+      "title": "SiteSetting",
+      "description": "Editable portfolio profile, skills, education timeline, contact links, and AI configuration.",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["key"]
+    },
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "Visitor contact submission stored securely for admin review.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "email": { "type": "string", "minLength": 3, "maxLength": 180 },
+        "subject": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "message": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "subject", "message", "createdAt"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized admin record keyed by Firebase Auth UID.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "email": { "type": "string", "minLength": 3, "maxLength": 180 },
+        "role": { "type": "string", "enum": ["admin"] }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Publicly readable portfolio projects; admin-only writes."
+    },
+    "/blog_posts/{postId}": {
+      "schema": { "$ref": "#/entities/BlogPost" },
+      "description": "Published blog articles readable publicly; drafts & writes restricted to admin."
+    },
+    "/learning_resources/{resourceId}": {
+      "schema": { "$ref": "#/entities/LearningResource" },
+      "description": "IT Learning Hub materials readable publicly; admin-only writes."
+    },
+    "/site_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSetting" },
+      "description": "Public profile & roadmap metadata (`public_profile`); `ai_config` restricted to admin."
+    },
+    "/contact_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ContactMessage" },
+      "description": "Validated contact submissions; readable and manageable by admin only."
+    },
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Protected admin registry."
+    }
+  }
+}
